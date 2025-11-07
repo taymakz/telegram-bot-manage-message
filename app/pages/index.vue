@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import BotProfileManager from '~/components/BotProfileManager.vue'
+import DatabaseProfileManager from '~/components/DatabaseProfileManager.vue'
 import MessageComposer from '~/components/MessageComposer.vue'
 import TelegramPreview from '~/components/TelegramPreview.vue'
 import { Button } from '~/components/ui/button'
@@ -28,7 +29,7 @@ function handleMessageUpdate(text: string, parseMode: string | null, imageUrl: s
           Manage bot profiles and send messages to multiple chats
         </p>
       </div>
-      
+
       <!-- Diagnostics Link -->
       <NuxtLink to="/diagnostics">
         <Button variant="outline" size="sm">
@@ -39,6 +40,9 @@ function handleMessageUpdate(text: string, parseMode: string | null, imageUrl: s
 
     <!-- Bot Profile Manager -->
     <BotProfileManager />
+
+    <!-- Database Profile Manager -->
+    <DatabaseProfileManager />
 
     <!-- Message Composer and Preview -->
     <div class="grid gap-8 lg:grid-cols-2">
@@ -61,10 +65,11 @@ function handleMessageUpdate(text: string, parseMode: string | null, imageUrl: s
       <ol class="text-muted-foreground space-y-2 text-sm">
         <li>1. Create a bot profile with your Telegram Bot Token (get it from @BotFather)</li>
         <li>2. Select the bot profile you want to use</li>
-        <li>3. Compose your message and select the format</li>
-        <li>4. Enter the chat IDs where you want to send the message</li>
-        <li>5. Optionally upload an image</li>
-        <li>6. Click "Send Message" to deliver your message</li>
+        <li>3. (Optional) Configure a database profile to import chat IDs</li>
+        <li>4. Compose your message and select the format</li>
+        <li>5. Enter the chat IDs or import from database</li>
+        <li>6. Optionally upload an image</li>
+        <li>7. Click "Send Message" to deliver your message</li>
       </ol>
 
       <div class="mt-4 space-y-1">

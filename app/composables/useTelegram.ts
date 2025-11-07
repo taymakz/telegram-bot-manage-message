@@ -116,6 +116,8 @@ export function useTelegram() {
    */
   async function uploadImage(file: File): Promise<string> {
     try {
+      const config = useRuntimeConfig()
+
       // Convert file to base64
       const base64 = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader()
@@ -134,7 +136,7 @@ export function useTelegram() {
       })
 
       // Using imgbb API (free tier: 32 MB limit)
-      const apiKey = 'd51fd5e5e179dcfb85f6bc1546803c6f'
+      const apiKey = config.public.imgbbApiKey
 
       const formData = new FormData()
       formData.append('image', base64)

@@ -51,6 +51,8 @@ export default defineNuxtConfig({
     public: {
       // Storage Url for media files
       storageUrl: '',
+      // ImgBB API key for image uploads
+      imgbbApiKey: 'd51fd5e5e179dcfb85f6bc1546803c6f',
     },
   },
 

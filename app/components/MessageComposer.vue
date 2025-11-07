@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ImagePlus, Loader2, Send, Trash2 } from 'lucide-vue-next'
+import { Database, ImagePlus, Loader2, Send, Trash2 } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
+import ImportFromDatabaseDialog from '~/components/ImportFromDatabaseDialog.vue'
 import { Button } from '~/components/ui/button'
 import {
   Card,
@@ -9,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '~/components/ui/card'
-import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import {
   Select,
@@ -35,6 +35,13 @@ const chatIdsInput = ref('')
 const selectedImage = ref<File | null>(null)
 const imagePreviewUrl = ref<string>()
 const uploadedImageUrl = ref<string>()
+
+// Import from database dialog state
+const isImportDialogOpen = ref(false)
+
+function handleIdsImported(ids: string) {
+  chatIdsInput.value = ids
+}
 
 // UI State
 const isSending = ref(false)
@@ -226,11 +233,23 @@ const canSend = computed(() => {
 
       <!-- Chat IDs -->
       <div class="space-y-2">
-        <Label for="chat-ids">Chat IDs</Label>
-        <Input
+        <div class="flex items-center justify-between">
+          <Label for="chat-ids">Chat IDs</Label>
+          <Button
+            variant="outline"
+            size="sm"
+            @click="isImportDialogOpen = true"
+          >
+            <Database class="mr-2 h-4 w-4" />
+            Import from Database
+          </Button>
+        </div>
+        <Textarea
           id="chat-ids"
           v-model="chatIdsInput"
           placeholder="123,456 or [123,456] or [{id:123},{id:456}]"
+          rows="3"
+          class="resize-none font-mono text-sm max-h-40"
         />
         <p class="text-muted-foreground text-xs">
           Enter one or more chat IDs (supports multiple formats)
@@ -317,5 +336,11 @@ const canSend = computed(() => {
         Please select or create a bot profile to send messages
       </div>
     </CardContent>
+
+    <!-- Import from Database Dialog -->
+    <ImportFromDatabaseDialog
+      v-model:open="isImportDialogOpen"
+      @ids-imported="handleIdsImported"
+    />
   </Card>
 </template>
