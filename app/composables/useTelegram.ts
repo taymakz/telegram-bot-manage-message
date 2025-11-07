@@ -116,30 +116,43 @@ export function useTelegram() {
    */
   async function uploadImage(file: File): Promise<string> {
     try {
-      // For demo purposes, we'll use a free image hosting API
-      // You should replace this with your preferred service
+      // Convert file to base64
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onload = () => {
+          const result = reader.result as string
+          // Remove data:image/...;base64, prefix
+          const base64Data = result.split(',')[1]
+          if (!base64Data) {
+            reject(new Error('Failed to convert image to base64'))
+            return
+          }
+          resolve(base64Data)
+        }
+        reader.onerror = reject
+        reader.readAsDataURL(file)
+      })
+
+      // Using imgbb API (free tier: 32 MB limit)
+      const apiKey = 'd51fd5e5e179dcfb85f6bc1546803c6f'
+
       const formData = new FormData()
-      formData.append('image', file)
-
-      // Using imgbb API (requires API key)
-      // Alternative: use your own server endpoint
-      const apiKey = 'd51fd5e5e179dcfb85f6bc1546803c6f' // Replace with actual key or use env variable
-
-      if (apiKey === 'd51fd5e5e179dcfb85f6bc1546803c6f') {
-        // Fallback: create a local object URL (won't work for Telegram API)
-        return URL.createObjectURL(file)
-      }
+      formData.append('image', base64)
 
       const response = await $fetch<any>(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
         method: 'POST',
         body: formData,
       })
 
+      if (!response.data?.url) {
+        throw new Error('Failed to get image URL from upload service')
+      }
+
       return response.data.url
     }
-    catch (error) {
+    catch (error: any) {
       console.error('Error uploading image:', error)
-      throw new Error('Failed to upload image')
+      throw new Error(error.message || 'Failed to upload image. Please try again.')
     }
   }
 
