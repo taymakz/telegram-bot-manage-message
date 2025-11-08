@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
-  const { botToken, chatId, text, parseMode, photo } = body
+  const { botToken, chatId, text, parseMode, photo, replyMarkup } = body
 
   if (!botToken || !chatId) {
     throw createError({
@@ -28,6 +28,7 @@ export default defineEventHandler(async (event) => {
           photo,
           caption: text || undefined,
           parse_mode: parseMode || undefined,
+          reply_markup: replyMarkup || undefined,
         },
         timeout: 30000, // 30 second timeout
       })
@@ -45,6 +46,7 @@ export default defineEventHandler(async (event) => {
         chat_id: chatId,
         text,
         parse_mode: parseMode || undefined,
+        reply_markup: replyMarkup || undefined,
       },
       timeout: 30000, // 30 second timeout
     })

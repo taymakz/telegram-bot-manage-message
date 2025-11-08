@@ -2,6 +2,7 @@ export interface TelegramMessage {
   text: string
   parse_mode?: 'Markdown' | 'MarkdownV2' | 'HTML' | null
   photo?: string
+  reply_markup?: string
 }
 
 export interface SendMessageResult {
@@ -77,6 +78,7 @@ export function useTelegram() {
           text: message.text,
           parseMode: message.parse_mode,
           photo: message.photo,
+          replyMarkup: message.reply_markup,
         },
       })
 

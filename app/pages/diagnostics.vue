@@ -51,14 +51,14 @@ onMounted(() => {
 
       <div class="flex gap-2">
         <Button :disabled="isLoading" @click="runDiagnostics">
-        <RefreshCw class="mr-2 h-4 w-4" :class="{ 'animate-spin': isLoading }" />
-        Refresh
-      </Button>
+          <RefreshCw class="mr-2 h-4 w-4" :class="{ 'animate-spin': isLoading }" />
+          Refresh
+        </Button>
         <Button as-child variant="outline">
-       <NuxtLink to="/">
-         Go Back
-       </NuxtLink>
-      </Button>
+          <NuxtLink to="/">
+            Go Back
+          </NuxtLink>
+        </Button>
       </div>
     </div>
 
@@ -214,17 +214,7 @@ onMounted(() => {
               Please resolve the issues above before using the app.
             </p>
 
-            <div class="mt-4">
-              <Button as-child variant="outline">
-                <a
-                  href="https://github.com/yourusername/telegram-bot-manager/blob/main/TROUBLESHOOTING.md"
-                  target="_blank"
-                  rel="noopener"
-                >
-                  View Troubleshooting Guide
-                </a>
-              </Button>
-            </div>
+    
           </div>
 
           <div class="text-muted-foreground mt-4 border-t pt-4 text-xs">

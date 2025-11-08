@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import type { TelegramButton } from '~/components/ButtonManager.vue'
 import { Database, ImagePlus, Loader2, Send, Trash2 } from 'lucide-vue-next'
 import { toast } from 'vue-sonner'
+import ButtonManager from '~/components/ButtonManager.vue'
 import ImportFromDatabaseDialog from '~/components/ImportFromDatabaseDialog.vue'
 import { Button } from '~/components/ui/button'
 import {
@@ -22,7 +24,7 @@ import Textarea from '~/components/ui/textarea/Textarea.vue'
 import { useBotProfilesStore } from '~/stores/botProfiles'
 
 const emit = defineEmits<{
-  messageUpdated: [text: string, parseMode: string | null, imageUrl: string | undefined]
+  messageUpdated: [text: string, parseMode: string | null, imageUrl: string | undefined, buttons: TelegramButton[]]
 }>()
 
 const store = useBotProfilesStore()
@@ -35,6 +37,7 @@ const chatIdsInput = ref('')
 const selectedImage = ref<File | null>(null)
 const imagePreviewUrl = ref<string>()
 const uploadedImageUrl = ref<string>()
+const buttons = ref<TelegramButton[]>([])
 
 // Import from database dialog state
 const isImportDialogOpen = ref(false)
@@ -56,9 +59,9 @@ const parseModeOptions = [
 ]
 
 // Watch for changes and emit to parent
-watch([messageText, parseMode, uploadedImageUrl], () => {
-  emit('messageUpdated', messageText.value, parseMode.value === 'None' ? null : parseMode.value, uploadedImageUrl.value)
-})
+watch([messageText, parseMode, uploadedImageUrl, buttons], () => {
+  emit('messageUpdated', messageText.value, parseMode.value === 'None' ? null : parseMode.value, uploadedImageUrl.value, buttons.value)
+}, { deep: true })
 
 // Image Upload Handler
 const fileInputRef = ref<HTMLInputElement>()
@@ -136,6 +139,27 @@ async function handleSendMessage() {
   isSending.value = true
 
   try {
+    // Build inline keyboard if buttons exist
+    let reply_markup
+    if (buttons.value.length > 0) {
+      const buttonsByRow = buttons.value.reduce((acc, button) => {
+        if (!acc[button.row]) {
+          acc[button.row] = []
+        }
+        acc[button.row]!.push({
+          text: button.text,
+          url: button.url,
+        })
+        return acc
+      }, {} as Record<number, Array<{ text: string, url: string }>>)
+
+      const inline_keyboard = Object.keys(buttonsByRow)
+        .sort((a, b) => Number(a) - Number(b))
+        .map(row => buttonsByRow[Number(row)])
+
+      reply_markup = JSON.stringify({ inline_keyboard })
+    }
+
     const results = await sendMessageToMultipleChats(
       store.activeProfile.bot_token,
       chatIds,
@@ -143,6 +167,7 @@ async function handleSendMessage() {
         text: messageText.value,
         parse_mode: parseMode.value === 'None' ? null : parseMode.value as any,
         photo: uploadedImageUrl.value,
+        reply_markup,
       },
     )
 
@@ -170,6 +195,7 @@ async function handleSendMessage() {
       messageText.value = ''
       chatIdsInput.value = ''
       removeImage()
+      buttons.value = []
     }
   }
   catch (error: any) {
@@ -314,6 +340,9 @@ const canSend = computed(() => {
           Upload an image to send with your message
         </p>
       </div>
+
+      <!-- Button Manager -->
+      <ButtonManager v-model:buttons="buttons" />
 
       <!-- Send Button -->
       <div class="flex justify-end gap-2 pt-4">

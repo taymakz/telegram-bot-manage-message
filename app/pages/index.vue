@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { TelegramButton } from '~/components/ButtonManager.vue'
 import BotProfileManager from '~/components/BotProfileManager.vue'
 import DatabaseProfileManager from '~/components/DatabaseProfileManager.vue'
 import MessageComposer from '~/components/MessageComposer.vue'
@@ -9,11 +10,13 @@ import { Button } from '~/components/ui/button'
 const previewText = ref('')
 const previewParseMode = ref<string | null>(null)
 const previewImageUrl = ref<string>()
+const previewButtons = ref<TelegramButton[]>([])
 
-function handleMessageUpdate(text: string, parseMode: string | null, imageUrl: string | undefined) {
+function handleMessageUpdate(text: string, parseMode: string | null, imageUrl: string | undefined, buttons: TelegramButton[]) {
   previewText.value = text
   previewParseMode.value = parseMode
   previewImageUrl.value = imageUrl
+  previewButtons.value = buttons
 }
 </script>
 
@@ -54,6 +57,7 @@ function handleMessageUpdate(text: string, parseMode: string | null, imageUrl: s
         :text="previewText"
         :parse-mode="previewParseMode"
         :image-url="previewImageUrl"
+        :buttons="previewButtons"
       />
     </div>
 
@@ -68,19 +72,34 @@ function handleMessageUpdate(text: string, parseMode: string | null, imageUrl: s
         <li>3. (Optional) Configure a database profile to import chat IDs</li>
         <li>4. Compose your message and select the format</li>
         <li>5. Enter the chat IDs or import from database</li>
-        <li>6. Optionally upload an image</li>
-        <li>7. Click "Send Message" to deliver your message</li>
+        <li>6. (Optional) Upload an image</li>
+        <li>7. (Optional) Add inline keyboard buttons with links</li>
+        <li>8. Click "Send Message" to deliver your message</li>
       </ol>
 
-      <div class="mt-4 space-y-1">
-        <h4 class="text-sm font-semibold">
-          Supported Chat ID formats:
-        </h4>
-        <ul class="text-muted-foreground space-y-1 text-xs font-mono">
-          <li>• 123,456 (comma-separated)</li>
-          <li>• [123,456] (array format)</li>
-          <li>• [{id:123}, {id:456}] (object array)</li>
-        </ul>
+      <div class="mt-4 grid gap-4 md:grid-cols-2">
+        <div class="space-y-1">
+          <h4 class="text-sm font-semibold">
+            Supported Chat ID formats:
+          </h4>
+          <ul class="text-muted-foreground space-y-1 text-xs font-mono">
+            <li>• 123,456 (comma-separated)</li>
+            <li>• [123,456] (array format)</li>
+            <li>• [{id:123}, {id:456}] (object array)</li>
+          </ul>
+        </div>
+
+        <div class="space-y-1">
+          <h4 class="text-sm font-semibold">
+            Inline Buttons:
+          </h4>
+          <ul class="text-muted-foreground space-y-1 text-xs">
+            <li>• Add clickable buttons with URLs</li>
+            <li>• Drag buttons to rearrange rows</li>
+            <li>• Max 8 buttons per row (3 recommended)</li>
+            <li>• URLs must start with http:// or https://</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
