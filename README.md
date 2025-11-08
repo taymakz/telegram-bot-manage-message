@@ -437,8 +437,8 @@ MIT License - see [LICENSE](LICENSE) file for details
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/telegram-bot-manager/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/telegram-bot-manager/discussions)
+- **Issues**: [GitHub Issues](https://github.com/taymakz/telegram-bot-manage-message/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/taymakz/telegram-bot-manage-message/discussions)
 - **Telegram**: [@BotFather](https://t.me/BotFather) for bot creation
 
 ---
